@@ -1,0 +1,16 @@
+
+{
+  "name": "Cidadão Urbano",
+  "short_name": "Urbano",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

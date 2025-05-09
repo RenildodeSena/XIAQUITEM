@@ -1,0 +1,51 @@
+
+<!-- Tela de Mapa de Ocorrências com Google Maps -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa de Ocorrências</title>
+  <style>
+    #map { height: 100vh; width: 100%; }
+    html, body { margin: 0; padding: 0; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    function initMap() {
+      const cidade = { lat: -6.4969, lng: -49.8739 }; // Coordenadas de Canaã dos Carajás
+      const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 14,
+        center: cidade,
+      });
+
+      // Exemplo de marcadores
+      const ocorrencias = [
+        { lat: -6.4965, lng: -49.8720, tipo: "Buraco", descricao: "Buraco na esquina da Rua X" },
+        { lat: -6.4975, lng: -49.8745, tipo: "Lixo", descricao: "Acúmulo de lixo em terreno baldio" }
+      ];
+
+      ocorrencias.forEach(ocorrencia => {
+        const marker = new google.maps.Marker({
+          position: { lat: ocorrencia.lat, lng: ocorrencia.lng },
+          map,
+          title: ocorrencia.tipo,
+        });
+
+        const infowindow = new google.maps.InfoWindow({
+          content: `<strong>${ocorrencia.tipo}</strong><br>${ocorrencia.descricao}`
+        });
+
+        marker.addListener("click", () => {
+          infowindow.open(map, marker);
+        });
+      });
+    }
+  </script>
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+<!-- Tela de Reportar Problema com Geolocalização, Prévia de Mapa e Envio por Email -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportar Problema</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .form-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    button { background-color: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+    button:hover { background-color: #125fa3; }
+    #mapPreview { width: 100%; height: 300px; border-radius: 8px; margin-top: 15px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Reportar Problema</h2>
+    <div class="form-group">
+      <label>Tipo de Problema</label>
+      <select id="tipo">
+        <option>Buraco</option>
+        <option>Mato Alto</option>
+        <option>Lixo</option>
+        <option>Esgoto</option>
+        <option>Outro</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Descrição</label>
+      <textarea id="descricao" rows="4" placeholder="Descreva o problema..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Endereço de Referência</label>
+      <input type="text" id="referencia" placeholder="Rua, bairro, ponto de referência...">
+    </div>
+    <div id="mapPreview"></div>
+    <p><strong>Importante:</strong> A localização será capturada automaticamente e a imagem deve ser anexada manualmente.</p>
+    <button onclick="enviarEmail()">Enviar por Email</button>
+  </div>
+
+  <script>
+    let lat = null;
+    let lng = null;
+
+    function mostrarMapa(lat, lng) {
+      const mapFrame = document.getElementById('mapPreview');
+      mapFrame.style.display = 'block';
+      mapFrame.innerHTML = `
+        <iframe
+          width="100%"
+          height="100%"
+          style="border:0"
+          loading="lazy"
+          allowfullscreen
+          src="https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY&center=${lat},${lng}&zoom=16&maptype=roadmap">
+        </iframe>
+      `;
+    }
+
+    function obterLocalizacao() {
+      if (!navigator.geolocation) {
+        alert('Geolocalização não é suportada pelo seu navegador.');
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(function(position) {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+        mostrarMapa(lat, lng);
+      }, function(error) {
+        alert('Não foi possível obter sua localização.');
+      });
+    }
+
+    function enviarEmail() {
+      const tipo = document.getElementById('tipo').value;
+      const descricao = document.getElementById('descricao').value;
+      const referencia = document.getElementById('referencia').value;
+      const assunto = encodeURIComponent('Denúncia de Problema Urbano');
+      const mapsLink = lat && lng ? `https://www.google.com/maps?q=${lat},${lng}` : 'Não capturado';
+
+      const corpo = encodeURIComponent(`Olá,\n\nGostaria de reportar o seguinte problema urbano:\n\nTipo: ${tipo}\nDescrição: ${descricao}\nReferência: ${referencia}\nLocalização GPS: ${mapsLink}\n\n(Foto será anexada manualmente).`);
+      window.location.href = `mailto:renildodesena@outlook.com?subject=${assunto}&body=${corpo}`;
+    }
+
+    // Capturar a localização assim que a página carrega
+    window.onload = obterLocalizacao;
+  </script>
+</body>
+</html>
